@@ -66,3 +66,11 @@ packages/
 
 #Test files
 *.testsettings
+
+
+#Unity files
+*.csproj
+*.pidb
+*.unityproj
+*.sln
+*.userprefs
