@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fws.Collections", "Fws.Coll
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fws.Collections.Test", "Fws.Collections.Test\Fws.Collections.Test.csproj", "{B250008D-D1FF-4BB7-9950-B316FC91DE63}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseKeepingService", "HouseKeepingService\HouseKeepingService.csproj", "{BF973274-4518-4192-A5E9-097195B8C304}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{B250008D-D1FF-4BB7-9950-B316FC91DE63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B250008D-D1FF-4BB7-9950-B316FC91DE63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B250008D-D1FF-4BB7-9950-B316FC91DE63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF973274-4518-4192-A5E9-097195B8C304}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF973274-4518-4192-A5E9-097195B8C304}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF973274-4518-4192-A5E9-097195B8C304}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF973274-4518-4192-A5E9-097195B8C304}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
