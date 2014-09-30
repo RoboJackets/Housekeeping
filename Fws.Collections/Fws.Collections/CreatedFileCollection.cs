@@ -56,6 +56,7 @@ namespace Fws.Collections
         {
             // Restrict the NotifyFilter to all that's necessary for Create events.
             // This minimizes the likelihood that FileSystemWatcher's buffer will be overwhelmed.
+            watcher.IncludeSubdirectories = true;
             watcher.NotifyFilter = NotifyFilters.FileName;
 
             watcher.Created += queue.Enqueue;
