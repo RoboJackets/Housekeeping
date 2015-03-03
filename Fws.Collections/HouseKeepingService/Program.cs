@@ -11,43 +11,6 @@ using System.IO;
 
 namespace HouseKeepingService
 {
-    /* static class Program
-     {
-         /// <summary>
-         /// The main entry point for the application.
-         /// </summary>
-         static void Main()
-         {
-             ServiceBase[] ServicesToRun;
-             ServicesToRun = new ServiceBase[] 
-             { 
-                 new Service1() 
-             };
-             ServiceBase.Run(ServicesToRun);
-         }
-
-         /*
-          *string sourceDir = @"C:\Some\Directory";
- string filePattern = "*.txt";
- var quiesceTime = TimeSpan.FromMinutes(2);
- var dupeTime = TimeSpan.FromMinutes(5);
-
- var files =
-     new ReadyFileCollection(
-         new TimedDistinctCollection<string>(
-             new CreatedFileCollection(cts.Token, sourceDir, filePattern),
-             dupeTime,
-             fileName => fileName),
-         cts.Token,
-         quiesceTime);
-
- foreach (var file in files)
- {
-     // Do something
- } 
-         
-     } */
-
     public partial class Program : ServiceBase
     {
         static void Main(string[] args)
@@ -67,18 +30,36 @@ namespace HouseKeepingService
             }
 
         }
-        /*public Program()
-        {
-            InitializeComponent();
-        }*/
 
         protected override void OnStart(string[] args)
         {
+            string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string pathDownload = Path.Combine(pathUser, "Downloads");
+            string pathDesktop = Path.Combine(pathUser, "Desktop");
+
+            Thread thread1 = new Thread(new ParameterizedThreadStart(Program.MaintainEmptyDirectory));
+            thread1.Start(pathDownload);
+
+            Thread thread2 = new Thread(new ParameterizedThreadStart(Program.MaintainEmptyDirectory));
+            thread2.Start(pathDesktop);
+            //MaintainEmptyDirectory(pathDownload);
+            //MaintainEmptyDirectory(pathDesktop);
+        }
+
+        public static void MaintainEmptyDirectory(object directory)
+        {
             CancellationTokenSource cts = new CancellationTokenSource();
-            string sourceDir = @"C:\test";
+            string sourceDir = (String)directory;
             string filePattern = "*.*";
-            var quiesceTime = TimeSpan.FromMinutes(0);
+            // Allow files to live for 1 day. 
+            var quiesceTime = TimeSpan.FromDays(1);
+            var dupeTime = TimeSpan.FromDays(1);
+
+            /*
+             * Useful for Debugging
+            var quiesceTime = TimeSpan.FromMinutes(1);
             var dupeTime = TimeSpan.FromMinutes(1);
+             * */
 
             var files =
                 new ReadyFileCollection(
@@ -92,8 +73,14 @@ namespace HouseKeepingService
             foreach (var file in files)
             {
                 Console.WriteLine(file);
-                if(file != "C:\test\temp.txt")
-                    File.Delete(file);
+                String[] temp = Directory.GetDirectories((String)directory);
+                foreach (String dir in temp)
+                {
+                    Console.WriteLine(dir);
+                    Directory.Delete(dir, true);
+                }
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
             } 
         }
 
