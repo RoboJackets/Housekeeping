@@ -8,6 +8,7 @@ using System.Windows.Markup;
 using Fws.Collections;
 using System.Threading;
 using System.IO;
+using System.Reflection;
 
 namespace HouseKeepingService
 {
@@ -15,32 +16,43 @@ namespace HouseKeepingService
     {
         static void Main(string[] args)
         {
-            Program service = new Program();
-            service.ServiceName = "HouseKeeping";
-
-            if (Environment.UserInteractive)
+            if (args.Length > 0)
             {
-                service.OnStart(args);
-                Console.WriteLine("Press any key to stop program");
-                Console.Read();
-                service.OnStop();
+                //Install service
+                if (args[0].Trim().ToLower() == "/i")
+                { System.Configuration.Install.ManagedInstallerClass.InstallHelper(new string[] { "/i", Assembly.GetExecutingAssembly().Location }); }
+
+                //Uninstall service                 
+                else if (args[0].Trim().ToLower() == "/u")
+                { System.Configuration.Install.ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location }); }
             }
             else
             {
-                ServiceBase.Run(service);
-            }
+                Program service = new Program();
+                service.ServiceName = "HouseKeeping";
 
+                //Only applicable when debugging as console application.
+                if (Environment.UserInteractive)
+                {
+                    service.OnStart(args);
+                    Console.WriteLine("Press any key to stop program");
+                    Console.Read();
+                    service.OnStop();
+                }
+
+                //The "normal" case.
+                else
+                {
+                    ServiceBase.Run(service);
+                }
+            }
         }
 
         protected override void OnStart(string[] args)
         {
-            //string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string pathUser = "C:\\Users\\RoboJackets\\";
+            string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string pathDownload = Path.Combine(pathUser, "Downloads");
             string pathDesktop = Path.Combine(pathUser, "Desktop");
-
-            //Console.WriteLine(pathDownload);
-            //Console.WriteLine(pathDesktop);
 
             Thread thread1 = new Thread(new ParameterizedThreadStart(Program.MaintainEmptyDirectory));
             thread1.Start(pathDownload);
@@ -76,7 +88,6 @@ namespace HouseKeepingService
 
             foreach (var file in files)
             {
-                //Console.WriteLine(file);
                 try
                 {
                     File.SetAttributes(file, FileAttributes.Normal);
@@ -84,7 +95,6 @@ namespace HouseKeepingService
                     String[] temp = Directory.GetDirectories((String)directory);
                     foreach (String dir in temp)
                     {
-                        Console.WriteLine(dir);
                         Directory.Delete(dir, true);
                     }
                 }
@@ -93,13 +103,10 @@ namespace HouseKeepingService
 
                 }
             }
-            //Console.WriteLine("Thread terminated!");
         }
 
         protected override void OnStop()
         {
-            // TODO: Add code here to perform any tear-down
-            //necessary to stop your service.
         }
     }
 }
